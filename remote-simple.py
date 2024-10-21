@@ -97,7 +97,8 @@ class NetCat:
                     self.socket.close()
                     sys.exit()
 
-if __name__ == '__main__':
+
+def main(args: list[str]) -> None:
     parser = argparse.ArgumentParser(
         description='BHP Net Tool',
         formatter_class=argparse.RawDescriptionHelpFormatter,
