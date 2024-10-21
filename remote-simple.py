@@ -131,10 +131,10 @@ def main(args: list[str]) -> None:
     parser.add_argument('-u', 
                         '--upload', 
                         help='upload file')
-    args = parser.parse_args(args)
-    if args.listen:
+    flags = parser.parse_args(args)
+    if flags.listen:
         buffer = ''
     else:
         buffer = sys.stdin.read()
-    nc = NetCat(args, buffer.encode())
+    nc = NetCat(flags, buffer.encode())
     nc.run()
