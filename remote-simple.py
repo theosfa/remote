@@ -102,6 +102,7 @@ class NetCat:
 
 def main(args: list[str]) -> None:
     parser = FlagParser(
+        prog='remote-simple',
         description='BHP Net Tool',
         epilog=textwrap.dedent('''Example: 2
         remote-simple -t 192.168.1.108 -p 5555 -l -c #command shell
@@ -116,7 +117,7 @@ def main(args: list[str]) -> None:
                         help='command shell')
     parser.add_argument('-e', 
                         '--execute', 
-                        help='executespecified command')
+                        help='execute specified command')
     parser.add_argument('-l', 
                         '--listen',
                         action='store_true', 
