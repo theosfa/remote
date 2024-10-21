@@ -4,6 +4,8 @@ import textwrap
 
 from NetCat import NetCat
 
+__all__ = ["remote-simple"]
+
 if __name__ == '__main__':
     parser = argparse.ArgumentParser(
         description='BHP Net Tool',

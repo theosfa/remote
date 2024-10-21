@@ -4,7 +4,6 @@ import subprocess
 import sys
 import threading
 
-__all__ = ["NetCat"]
 
 def execute(cmd):
     cmd = cmd.strip()
