@@ -103,7 +103,6 @@ class NetCat:
 def main(args: list[str]) -> None:
     parser = FlagParser(
         description='BHP Net Tool',
-        formatter_class=argparse.RawDescriptionHelpFormatter,
         epilog=textwrap.dedent('''Example: 2
         remote-simple -t 192.168.1.108 -p 5555 -l -c #command shell
         remote-simple -t 192.168.1.108 -p 5555 -l -u=mytest.txt # upload to file
