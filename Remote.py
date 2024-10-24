@@ -3,7 +3,14 @@ import shlex
 import subprocess
 import sys
 import threading
+import secrets
 
+__all__ = ["Remote"]
+
+PROTOCOL = {
+    "udp" : socket.SOCK_DGRAM,
+    "tcp" : socket.SOCK_STREAM
+}
 
 def execute(cmd):
     cmd = cmd.strip()
@@ -13,7 +20,7 @@ def execute(cmd):
         stderr=subprocess.STDOUT)
     return output.decode()
 
-class NetCat:
+class Remote:
     def __init__(self, args, buffer=None):
         self.args = args
         self.buffer = buffer
@@ -22,39 +29,72 @@ class NetCat:
         self.socket.setsockopt(socket.SOL_SOCKET, 
                                socket.SO_REUSEADDR, 1)
 
-    def run(self):
-        if self.args.listen:
+    def __init__(
+            self,
+            host: str | None = None,
+            port: int = secrets.randbelow(0xffff),
+            ip6: bool = False,
+            listen: bool = False,
+            protocol: str = "tcp",
+            bufsize: int = 8912,
+            command: bool = False,
+            execute: str | None = None,
+            upload: str | None = None,
+            buffer: str = '',
+    ) -> None:
+        self.usage = listen
+        self.protocol = protocol
+        self.host = host
+        self.port = port
+        self.bufsize = bufsize
+        self.ip6 = ip6
+        self.command = command
+        self.execute = execute
+        self.upload = upload
+        self.buffer = buffer
+
+        self.socket = socket.socket(socket.AF_INET6 if self.ip6 else socket.AF_INET,
+                                    PROTOCOL[self.protocol])
+        
+        self.socket.setsockopt(socket.SOL_SOCKET,
+                               socket.SO_REUSEADDR, 1)
+
+        
+
+    def start(self):
+        if self.usage:
             self.listen()
         else:
-            self.send()
+            self.connect()
     
-    def send(self):
-        self.socket.connect((self.args.target,
-                            self.args.port))
+    def connect(self) -> None:
+        self.socket.connect(self.host, self.port)
+
         if self.buffer:
             self.socket.send(self.buffer)
+        
         try:
             while True:
                 recv_len = 1
                 response = ''
+
                 while recv_len:
-                    data = self.socket.recv(4096)
+                    data = self.socket.recv(self.bufsize)
                     recv_len = len(data)
                     response += data.decode()
-                    if recv_len < 4096:
+
+                    if recv_len < self.bufsize:
                         break
                 if response:
                     print(response)
-                    buffer = input('> ')
-                    buffer += '\n'
-                    self.socket.send(buffer.encode())
+                    buff = input('> ')
+                    # buff += '\n'
+                    self.socket.send(buff.encode())
         except KeyboardInterrupt:
-            print('User terminated.')
-            self.socket.close()
-            sys.exit()
+            print('remote: User terminated')
     
     def listen(self):
-        self.socket.bind((self.args.target, self.args.port))
+        self.socket.bind((self.host, self.port))
         self.socket.listen(5)
         while True:
             client_socket, _ = self.socket.accept()
@@ -62,26 +102,27 @@ class NetCat:
             client_thread.start()
     
     def handle(self, client_socket):
-        if self.args.execute:
-            output = execute(self.args.execute)
+        if self.execute:
+            output = execute(self.execute)
             client_socket.send(output.encode())
-        elif self.args.upload:
+        elif self.upload:
             file_buffer = b''
             while True:
-                data = client_socket.recv(4096)
+                data = client_socket.recv(self.bufsize)
                 if data:
                     file_buffer += data
                 else:
                     break
-                with open(self.args.upload, 'wb') as f:
+                with open(self.upload, 'wb') as f:
                     f.write(file_buffer)
-                message = f'Saved file {self.args.upload}'
+                    client_socket.ssendfile(f)
+                message = f'Saved file {self.upload}'
                 client_socket.send(message.encode())
-        elif self.args.command:
+        elif self.command:
             cmd_buffer = b''
             while True:
                 try:
-                    client_socket.send(b'BHP: #> ')
+                    client_socket.send(b'unet: #> ')
                     while '\n' not in cmd_buffer.decode():
                         cmd_buffer += client_socket.recv(64)
                     response = execute(cmd_buffer.decode())
