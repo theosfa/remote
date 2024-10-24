@@ -115,7 +115,7 @@ class Remote:
                     break
                 with open(self.upload, 'wb') as f:
                     f.write(file_buffer)
-                    client_socket.ssendfile(f)
+                    client_socket.sendfile(f)
                 message = f'Saved file {self.upload}'
                 client_socket.send(message.encode())
         elif self.command:
