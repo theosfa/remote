@@ -7,6 +7,7 @@ PORT = 9998
 def main():
     server = socket.socket(socket.AF_INET,
             socket.SOCK_STREAM)
+    # server.close()
     server.bind((IP, PORT))
     server.listen(5)
     print(f"[*] Listening on {IP}:{PORT}")
@@ -20,7 +21,9 @@ def main():
 
 def handle_client(client_socket):
     with client_socket as sock:
-        request = sock.recv(1024)
+        request = sock.recv(8192)
+        with open("recv.txt", "wb") as f:
+            f.write(request)
         print(f'[*] Received: {request.decode("utf-8")}')
         sock.send(b'ACK')
 

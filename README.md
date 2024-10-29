@@ -1,5 +1,7 @@
-# remote-simple
-Simple remote module for UNET
+# Remote
+
+Remote module for UNET
+
 ## Specs
 
 1. network communication modes:
@@ -32,17 +34,18 @@ Simple remote module for UNET
 host         host to connect to
 port         port to connect to (default: random)
 
--6, --ip6             use IPv6
--n                    do not do any DNS lookups on the supplied host
--l, --listen          listen for incoming connections (connect by default)
--p, --port <port>     port on which to listen (default: random)
--u, --udp             use UDP (TCP by default)
--b                    bind socket to the interface
--i <name>             use the supplied interface
--o <in file>          send <in file> to the destination host(only TCP)
--s <addr>             use <addr> as the source address
--T <timeout>          TCP connection timeout (in seconds)
--d <delay>            send data with delay
+-6, --ip6                 use IPv6
+-n                        do not do any DNS lookups on the supplied host
+-l, --listen              listen for incoming connections (connect by default)
+-p, --port <port>         port on which to listen (default: random)
+-u, --udp                 use UDP (TCP by default)
+-b                        bind socket to the interface
+-i <name>                 use the supplied interface
+-s, --send <in file>      send <in file> to the destination host
+-r, --receive <file|None> receive <file> with name <file> or auto name
+-a <addr>                 use <addr> as the source address
+-T <timeout>              TCP connection timeout (in seconds)
+-d <delay>                send data with delay
 
 ### Interfaces
 

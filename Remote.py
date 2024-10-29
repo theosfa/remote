@@ -4,6 +4,8 @@ import subprocess
 import sys
 import threading
 import secrets
+from pathlib import Path
+from datetime import date
 
 __all__ = ["Remote"]
 
@@ -39,7 +41,9 @@ class Remote:
             bufsize: int = 8912,
             command: bool = False,
             execute: str | None = None,
-            upload: str | None = None,
+            send: bool = False,
+            receive: bool = False,
+            name: str | None = None,
             buffer: str = '',
     ) -> None:
         self.usage = listen
@@ -50,7 +54,9 @@ class Remote:
         self.ip6 = ip6
         self.command = command
         self.execute = execute
-        self.upload = upload
+        self.name = name
+        self.send = send
+        self.receive = receive
         self.buffer = buffer
 
         self.socket = socket.socket(socket.AF_INET6 if self.ip6 else socket.AF_INET,
@@ -73,6 +79,15 @@ class Remote:
         if self.buffer:
             self.socket.send(self.buffer)
         
+        if self.send:
+            offset = self.sendfile(self.name)
+            message = f'Sended file with {offset} bytes'
+            print(message)
+        elif self.receive:
+            offset = self.receivefile(self.name)
+            message = f'Received file with {offset} bytes'
+            print(message)
+
         try:
             while True:
                 recv_len = 1
@@ -105,19 +120,14 @@ class Remote:
         if self.execute:
             output = execute(self.execute)
             client_socket.send(output.encode())
-        elif self.upload:
-            file_buffer = b''
-            while True:
-                data = client_socket.recv(self.bufsize)
-                if data:
-                    file_buffer += data
-                else:
-                    break
-                with open(self.upload, 'wb') as f:
-                    f.write(file_buffer)
-                    client_socket.sendfile(f)
-                message = f'Saved file {self.upload}'
-                client_socket.send(message.encode())
+        elif self.send:
+            offset = self.sendfile(self.name)
+            message = f'Sended file with {offset} bytes'
+            client_socket.send(message.encode())
+        elif self.receive:
+            offset = self.receivefile(self.name)
+            message = f'Received file with {offset} bytes'
+            client_socket.send(message.encode())
         elif self.command:
             cmd_buffer = b''
             while True:
@@ -133,3 +143,45 @@ class Remote:
                     print(f'server killed {e}')
                     self.socket.close()
                     sys.exit()
+
+    def sendfile(self, file: str) -> int:
+        # Make the path absolute
+        path = Path(file).expanduser().resolve()
+        
+        # The size of a file to send
+        size = path.stat.st_size
+        
+        # The number of bytes sent
+        offset = 0
+
+        with path.open("rb") as f:
+            while size > 0:
+                bytes_read = f.read(min(size, self.bufsize))
+                self.socket.send(bytes_read)
+                
+                size -= len(bytes_read)
+                offset += len(bytes_read)
+
+        return offset
+
+    def receivefile(self, file: str) -> int:
+        if file:
+            # Make the path absolute
+            path = Path(file).expanduser().resolve()
+        else:
+            name = "unet_receive_" + f"{date.today()}" + "_" + self.host
+            path = Path().expanduser().resolve()
+        
+        # The size of a file to receive
+        size = 1
+        
+        # The number of bytes received
+        offset = 0
+
+        with path.open("wb") as f:
+            while size > 0:
+                bytes_read = f.write(self.socket.recv(self.bufsize))
+                size = len(bytes_read)
+                offset += len(bytes_read)
+
+        return offset

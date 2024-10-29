@@ -61,13 +61,28 @@ REMOTE_FLAGS = {
         default=None,
         metavar="<cmd>",
     ),
-    "upload": OptionFlag(
-        short="-o",
-        help="upload the supplied file",
+    "send": OptionFlag(
+        short="-s",
+        long="--send",
+        help="send file, to specify name use -n/--name",
+        action="store_true",
+        required=False,
+    ),
+    "receive": OptionFlag(
+        short="-r",
+        long="--receive",
+        help="receive file, to specify name use -n/--name",
+        action="store_true",
+        required=False,
+    ),
+    "name": OptionFlag(
+        short="-n",
+        long="--name",
+        help="stores name for sending/receiving files (default: auto naming)",
         type=str,
         required=False,
         default=None,
-        metavar="<in file>",
+        metavar="<file>",
     ),
     "examples": Group(
         description="\n".join([
@@ -94,6 +109,21 @@ def main(args: list[str]) -> None:
     else:
         print(f"connect to {flags.target}:{flags.port}")
         buffer = sys.stdin.read()
+    
+    protocol = "udp" if flags.udp else "tcp"
 
-    remote = Remote(flags, buffer.encode())
+    remote = Remote(
+        flags.host,
+        flags.port,
+        flags.ipv6,
+        flags.listen,
+        protocol,
+        flags.bufsize,
+        flags.command,
+        flags.execute,
+        flags.send,
+        flags.receive,
+        flags.name,
+        buffer.encode(),
+        )
     remote.start()
