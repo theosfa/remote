@@ -287,10 +287,10 @@ def main(args: list[str]) -> None:
     flags = parser.parse_args(args)
 
     if flags.listen:
-        print(f"listening on {flags.target}:{flags.port}")
+        print(f"listening on {flags.host}:{flags.port}")
         buffer = ''
     else:
-        print(f"connect to {flags.target}:{flags.port}")
+        print(f"connect to {flags.host}:{flags.port}")
         buffer = sys.stdin.read()
     
     protocol = "udp" if flags.udp else "tcp"
