@@ -78,7 +78,7 @@ class Remote:
             self.connect()
     
     def connect(self) -> None:
-        self.socket.connect(self.host, self.port)
+        self.socket.connect((self.host, self.port))
 
         if self.buffer:
             self.socket.send(self.buffer)
