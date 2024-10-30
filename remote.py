@@ -9,8 +9,6 @@ import secrets
 from pathlib import Path
 from datetime import date
 
-import Remote
-
 from unet.flag import FlagParser, PositionalFlag, OptionFlag, Group
 
 __all__ = ["remote-simple"]
