@@ -244,6 +244,15 @@ REMOTE_FLAGS = {
         default=None,
         metavar="<cmd>",
     ),
+    "bufsize": OptionFlag(
+        short="-b",
+        long="--bufsize",
+        help="changes bufsize (default: 8912)",
+        type=int,
+        required=False,
+        default=8912,
+        metavar="<bufsize>",
+    ),
     "send": OptionFlag(
         short="-s",
         long="--send",
