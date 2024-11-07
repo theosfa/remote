@@ -179,7 +179,7 @@ class Remote:
             path = Path(file).expanduser().resolve()
         else:
             name = "unet_receive_" + f"{date.today()}" + "_" + self.host
-            path = Path().expanduser().resolve()
+            path = Path(name).expanduser().resolve()
         
         # The size of a file to receive
         size = 1
