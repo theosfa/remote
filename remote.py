@@ -158,7 +158,7 @@ class Remote:
         path = Path(file).expanduser().resolve()
         print(path)
         # The size of a file to send
-        size = path.stat.st_size
+        size = path.stat().st_size
         
         # The number of bytes sent
         offset = 0
