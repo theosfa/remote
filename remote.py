@@ -264,6 +264,7 @@ REMOTE_FLAGS = {
         help="send file, to specify name use -n/--name",
         action="store_true",
         required=False,
+        default=False
     ),
     "receive": OptionFlag(
         short="-r",
@@ -271,6 +272,7 @@ REMOTE_FLAGS = {
         help="receive file, to specify name use -n/--name",
         action="store_true",
         required=False,
+        default=False
     ),
     "name": OptionFlag(
         short="-n",
