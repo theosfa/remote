@@ -121,6 +121,7 @@ class Remote:
             client_thread.start()
     
     def handle(self, client_socket):
+        print("connected")
         if self.execute:
             output = execute(self.execute)
             client_socket.send(output.encode())
