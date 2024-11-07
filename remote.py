@@ -72,6 +72,7 @@ class Remote:
         
 
     def start(self):
+        print(self.usage)
         if self.usage:
             self.listen()
         else:
@@ -119,6 +120,7 @@ class Remote:
             client_socket, _ = self.socket.accept()
             client_thread = threading.Thread(target=self.handle, args=(client_socket,))
             client_thread.start()
+            print("smth")
     
     def handle(self, client_socket):
         print("connected")
