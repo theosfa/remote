@@ -120,7 +120,7 @@ class Remote:
         while True:
             client_socket, client_address = self.socket.accept()
             print(f"[*] Accepted connection from {client_address[0]}: {client_address[1]}")
-            client_thread = threading.Thread(target=self.handle, args=(client_socket))
+            client_thread = threading.Thread(target=self.handle, args=(client_socket,))
             client_thread.start()
             print("smth")
     
