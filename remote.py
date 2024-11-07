@@ -162,14 +162,14 @@ class Remote:
         
         # The number of bytes sent
         offset = 0
-
-        with path.open("rb") as f:
-            while size > 0:
-                bytes_read = f.read(min(size, self.bufsize))
-                self.socket.send(bytes_read)
+        self.socket.sendfile(path)
+        # with path.open("rb") as f:
+        #     while size > 0:
+        #         bytes_read = f.read(min(size, self.bufsize))
+        #         self.socket.send(bytes_read)
                 
-                size -= len(bytes_read)
-                offset += len(bytes_read)
+        #         size -= len(bytes_read)
+        #         offset += len(bytes_read)
 
         return offset
 
