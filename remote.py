@@ -118,8 +118,9 @@ class Remote:
         self.socket.listen(5)
         print("Is ok?")
         while True:
-            client_socket, _ = self.socket.accept()
-            client_thread = threading.Thread(target=self.handle, args=(client_socket,))
+            client_socket, client_address = self.socket.accept()
+            print(f"[*] Accepted connection from {client_address[0]}: {client_address[1]}")
+            client_thread = threading.Thread(target=self.handle, args=(client_socket))
             client_thread.start()
             print("smth")
     
