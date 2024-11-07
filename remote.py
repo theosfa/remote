@@ -83,7 +83,7 @@ class Remote:
 
         if self.buffer:
             self.socket.send(self.buffer)
-        
+        print(self.send)
         if self.send:
             offset = self.sendfile(self.name)
             message = f'Sended file with {offset} bytes'
@@ -156,7 +156,7 @@ class Remote:
     def sendfile(self, file: str) -> int:
         # Make the path absolute
         path = Path(file).expanduser().resolve()
-        
+        print(path)
         # The size of a file to send
         size = path.stat.st_size
         
