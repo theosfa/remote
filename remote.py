@@ -189,7 +189,8 @@ class Remote:
 
         with path.open("wb") as f:
             while size > 0:
-                bytes_read = f.write(self.socket.recv(self.bufsize))
+                data = self.socket.recv(self.bufsize)
+                bytes_read = f.write(data)
                 size = len(bytes_read)
                 offset += len(bytes_read)
 
