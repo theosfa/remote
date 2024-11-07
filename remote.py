@@ -116,6 +116,7 @@ class Remote:
     def listen(self):
         self.socket.bind((self.host, self.port))
         self.socket.listen(5)
+        print("Is ok?")
         while True:
             client_socket, _ = self.socket.accept()
             client_thread = threading.Thread(target=self.handle, args=(client_socket,))
