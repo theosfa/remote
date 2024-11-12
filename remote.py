@@ -72,7 +72,6 @@ class Remote:
         
 
     def start(self):
-        print(self.usage)
         if self.usage:
             self.listen()
         else:
@@ -106,9 +105,8 @@ class Remote:
                     if recv_len < self.bufsize:
                         break
                 if response:
-                    print(response)
-                    buff = input('> ')
-                    # buff += '\n'
+                    buff = input(response)
+                    buff += '\n'
                     self.socket.send(buff.encode())
         except KeyboardInterrupt:
             print('remote: User terminated')
