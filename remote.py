@@ -89,7 +89,7 @@ class Remote:
             message = f'Sended file with {offset} bytes'
             print(message)
         elif self.receive:
-            offset = self.receivefile(self.name)
+            offset = self.receivefile(self.name, self.socket)
             message = f'Received file with {offset} bytes'
             print(message)
 
@@ -130,7 +130,7 @@ class Remote:
             output = execute(self.execute)
             client_socket.send(output.encode())
         elif self.send:
-            offset = self.sendfile(self.name)
+            offset = self.sendfile(self.name, client_socket)
             message = f'Sended file with {offset} bytes'
             client_socket.send(message.encode())
         elif self.receive:
@@ -178,7 +178,7 @@ class Remote:
             # Make the path absolute
             path = Path(file).expanduser().resolve()
         else:
-            name = "unet_receive_" + f"{date.today()}" + "_" + self.host + "_" + self.port
+            name = "unet_receive_" + f"{date.today()}" + "_" + self.host + "_" + str(self.port)
             path = Path(name).expanduser().resolve()
         
         # The number of bytes received
