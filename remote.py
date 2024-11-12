@@ -134,7 +134,7 @@ class Remote:
             message = f'Sended file with {offset} bytes'
             client_socket.send(message.encode())
         elif self.receive:
-            offset = self.receivefile(self.name)
+            offset = self.receivefile(self.name, client_socket)
             message = f'Received file with {offset} bytes'
             client_socket.send(message.encode())
         elif self.command:
@@ -163,17 +163,17 @@ class Remote:
         # The number of bytes sent
         offset = 0
        
-        with path.open("rb") as f:
-            while size > 0:
-                bytes_read = f.read(min(size, self.bufsize))
-                self.socket.send(bytes_read)
-                
-                size -= len(bytes_read)
-                offset += len(bytes_read)
+        f = open(path, "rb")
+        while size > 0:
+            bytes_read = f.read(min(size, self.bufsize))
+            self.socket.send(bytes_read)
+            
+            size -= len(bytes_read)
+            offset += len(bytes_read)
 
         return offset
 
-    def receivefile(self, file: str) -> int:
+    def receivefile(self, file: str, client_socket) -> int:
         if file:
             # Make the path absolute
             path = Path(file).expanduser().resolve()
@@ -186,7 +186,7 @@ class Remote:
 
         data = "1"
         while data:
-            data = self.socket.recv(self.bufsize)
+            data = client_socket.recv(self.bufsize)
             with path.open("ab") as f:
                 bytes_read = f.write(data)
                 print(f'[*] Received:\n {data.decode("utf-8")}')
