@@ -82,7 +82,6 @@ class Remote:
 
         if self.buffer:
             self.socket.send(self.buffer)
-        print(self.send)
         if self.send:
             offset = self.sendfile(self.name, self.socket)
             message = f'Sended file with {offset} bytes'
