@@ -181,17 +181,15 @@ class Remote:
             name = "unet_receive_" + f"{date.today()}" + "_" + self.host
             path = Path(name).expanduser().resolve()
         
-        # The size of a file to receive
-        size = 1
-        
         # The number of bytes received
         offset = 0
 
-        with path.open("wb") as f:
-            while size > 0:
-                data = self.socket.recv(self.bufsize)
+        data = "1"
+        while data:
+            data = self.socket.recv(self.bufsize)
+            with path.open("ab") as f:
                 bytes_read = f.write(data)
-                size = len(bytes_read)
+                print(f'[*] Received:\n {data.decode("utf-8")}')
                 offset += len(bytes_read)
 
         return offset

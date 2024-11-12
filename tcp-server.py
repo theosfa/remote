@@ -21,11 +21,16 @@ def main():
 
 def handle_client(client_socket):
     with client_socket as sock:
-        request = sock.recv(8192)
-        with open("recv.txt", "wb") as f:
-            f.write(request)
-        print(f'[*] Received: {request.decode("utf-8")}')
-        sock.send(b'ACK')
+        request = "1"
+        while request:
+            request = sock.recv(4096)
+            print("-"*100)
+            with open("recv.txt", "ab") as f:
+                f.write(request)
+                print(f'[*] Received: {request.decode("utf-8")}')
+                # sock.send(b'ACK')
+            print("-"*100)
+        
 
 if __name__ == '__main__':
     main()
