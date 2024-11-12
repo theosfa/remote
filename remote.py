@@ -85,7 +85,7 @@ class Remote:
             self.socket.send(self.buffer)
         print(self.send)
         if self.send:
-            offset = self.sendfile(self.name)
+            offset = self.sendfile(self.name, self.socket)
             message = f'Sended file with {offset} bytes'
             print(message)
         elif self.receive:
@@ -153,7 +153,7 @@ class Remote:
                     self.socket.close()
                     sys.exit()
 
-    def sendfile(self, file: str) -> int:
+    def sendfile(self, file: str, client_socket) -> int:
         # Make the path absolute
         path = Path(file).expanduser().resolve()
         print(path)
@@ -166,7 +166,7 @@ class Remote:
         f = open(path, "rb")
         while size > 0:
             bytes_read = f.read(min(size, self.bufsize))
-            self.socket.send(bytes_read)
+            client_socket.send(bytes_read)
             
             size -= len(bytes_read)
             offset += len(bytes_read)
@@ -178,7 +178,7 @@ class Remote:
             # Make the path absolute
             path = Path(file).expanduser().resolve()
         else:
-            name = "unet_receive_" + f"{date.today()}" + "_" + self.host
+            name = "unet_receive_" + f"{date.today()}" + "_" + self.host + "_" + self.port
             path = Path(name).expanduser().resolve()
         
         # The number of bytes received
