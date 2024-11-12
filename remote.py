@@ -189,8 +189,9 @@ class Remote:
             data = client_socket.recv(self.bufsize)
             with path.open("ab") as f:
                 bytes_read = f.write(data)
+                print(bytes_read)
                 print(f'[*] Received:\n {data.decode("utf-8")}')
-                offset += len(bytes_read)
+                offset += bytes_read
 
         return offset
 
