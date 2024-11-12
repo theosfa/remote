@@ -91,7 +91,7 @@ class Remote:
         elif self.receive:
             offset = self.receivefile(self.name, self.socket)
             message = f'Received file with {offset} bytes'
-            print(message)
+            self.socket.send(message.encode())
 
         try:
             while True:
@@ -116,23 +116,20 @@ class Remote:
     def listen(self):
         self.socket.bind((self.host, self.port))
         self.socket.listen(5)
-        print("Is ok?")
         while True:
             client_socket, client_address = self.socket.accept()
             print(f"[*] Accepted connection from {client_address[0]}: {client_address[1]}")
             client_thread = threading.Thread(target=self.handle, args=(client_socket,))
             client_thread.start()
-            print("smth")
     
     def handle(self, client_socket):
-        print("connected")
         if self.execute:
             output = execute(self.execute)
             client_socket.send(output.encode())
         elif self.send:
             offset = self.sendfile(self.name, client_socket)
             message = f'Sended file with {offset} bytes'
-            # client_socket.send(message.encode())
+            print(message)
         elif self.receive:
             offset = self.receivefile(self.name, client_socket)
             message = f'Received file with {offset} bytes'
