@@ -132,7 +132,7 @@ class Remote:
         elif self.send:
             offset = self.sendfile(self.name, client_socket)
             message = f'Sended file with {offset} bytes'
-            client_socket.send(message.encode())
+            # client_socket.send(message.encode())
         elif self.receive:
             offset = self.receivefile(self.name, client_socket)
             message = f'Received file with {offset} bytes'
