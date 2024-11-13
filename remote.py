@@ -80,8 +80,8 @@ class Remote:
     def connect(self) -> None:
         self.socket.connect((self.host, self.port))
 
-        if self.buffer:
-            self.socket.send(self.buffer)
+        # if self.buffer:
+        #     self.socket.send(self.buffer)
         if self.send:
             offset = self.sendfile(self.name, self.socket)
             message = f'Sended file with {offset} bytes'
@@ -301,7 +301,8 @@ def main(args: list[str]) -> None:
         buffer = ''
     else:
         print(f"connect to {flags.host}:{flags.port}")
-        buffer = sys.stdin.read()
+        # buffer = sys.stdin.read()
+        buffer = ''
     
     protocol = "udp" if flags.udp else "tcp"
 
